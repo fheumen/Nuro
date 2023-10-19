@@ -40,7 +40,7 @@ if prompt:
         )
 
         formatted_response = (
-            #f"{generated_response['result']} \n\n {create_sources_string(sources)}"
+            # f"{generated_response['result']} \n\n {create_sources_string(sources)}"
             f"{generated_response['answer']} \n\n {create_sources_string(sources)}"
         )
 
