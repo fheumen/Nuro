@@ -10,15 +10,18 @@ from langchain.agents.agent_types import AgentType
 from langchain.chat_models import ChatOpenAI
 import pyodbc
 from sqlalchemy import create_engine
+from questions_demodb_omopsynthea import *
 
 import os
-#import dotenv
-#from dotenv import load_dotenv
+
+## Load env vars from .env file
+import dotenv
+from dotenv import load_dotenv
 
 
-server = 'LAPTOP-TMG2FQQS\MSSQLSERVER01'
-database = 'omopcdm_synthea'
-driver = '{ODBC Driver 17 for SQL Server}'
+server = os.environ.get("SERVER")
+database = os.environ.get("DATABASE")
+driver = os.environ.get("DRIVER")
 
 #conn_str = f'Driver={driver};Server={server};Database={database};integratedSecurity=true;trusted_Connection=yes'
 # db = pyodbc.connect(conn_str)
@@ -29,10 +32,12 @@ odbc_str = 'mssql+pyodbc:///?odbc_connect=' \
                 ';DATABASE=' + database + \
                 ';integratedSecurity=true;trusted_Connection=yes;'
 
-db_engine = create_engine(odbc_str )
-db = SQLDatabase(db_engine)
+#db_engine = create_engine(odbc_str )
+#db = SQLDatabase(db_engine)
+db = SQLDatabase.from_uri(odbc_str)
 
 llm = ChatOpenAI(temperature=0, openai_api_key=os.environ["OPENAI_API_KEY"], model_name='gpt-3.5-turbo')
+#llm = OpenAI(temperature=0, openai_api_key=os.environ["OPENAI_API_KEY"], model_name='text-davinci-003')
 #db_chain = SQLDatabaseSequentialChain(llm=llm, database=connection , verbose=True, top_k=3)
 sql_toolkit = SQLDatabaseToolkit(db=db, llm=llm)
 
@@ -59,10 +64,13 @@ sqldb_agent = create_sql_agent(
 )
 
 
-sqldb_agent.run(final_prompt.format(
-        #question="count of records in table medications ?"
-        question="What is the most used medications description?"
-  ))
+try:
+    sqldb_agent.run(final_prompt.format(question=question_02))
+except (ProgrammingError, ValueError) as exc:
+    print(f"\n\n{exc}")
+
+
+
 # cursor = connection.cursor()
 #
 # cursor.execute("SELECT TOP 10 * from omopcdm_synthea.dbo.allergies")

@@ -15,3 +15,5 @@ pipenv
 pyodbc
 pypdf
 tiktoken
+pinecone-client
+python-dotenv
