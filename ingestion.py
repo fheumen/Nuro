@@ -54,3 +54,5 @@ def ingest_docs() -> None:
     # print(result)
 
     # print(document)
+if __name__ == "__main__":
+    ingest_docs()

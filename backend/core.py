@@ -14,8 +14,8 @@ from consts import INDEX_NAME
 print(INDEX_NAME)
 # pinecone.init(api_key="f0358c1e-0404-4344-8e87-1120495ea92e", environment="gcp-starter")
 pinecone.init(
-    api_key=os.environ["PINECONE_API_KEY"],
-    environment=os.environ["PINECONE_ENVIRONMENT_REGION"],
+    api_key=os.environ.get("PINECONE_API_KEY"),
+    environment=os.environ.get("PINECONE_ENVIRONMENT_REGION"),
 )
 
 
@@ -36,7 +36,7 @@ def run_llm(query: str, chat_history: List[Dict[str, Any]] = []) -> Any:
         llm=chat, retriever=docsearch.as_retriever(), return_source_documents=True
     )
 
-    #return qa({"query": query, "chat_history": chat_history})
+    # return qa({"query": query, "chat_history": chat_history})
     return qa({"question": query, "chat_history": chat_history})
 
 
